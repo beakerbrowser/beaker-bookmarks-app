@@ -1,4 +1,5 @@
 import {html} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
+import {bookmarks} from '../tmp-beaker.js'
 import {Table} from '/vendor/beaker-app-stdlib/js/com/table.js'
 import {BeakerEditBookmarkPopup} from '/vendor/beaker-app-stdlib/js/com/popups/edit-bookmark.js'
 import tableCSS from '/vendor/beaker-app-stdlib/css/com/table.css.js'
@@ -14,7 +15,13 @@ class BookmarksListing extends Table {
   constructor () {
     super()
 
-    this.bookmarks = DEBUG_BOOKMARKS
+    this.bookmarks = []
+    this.load()
+  }
+
+  async load () {
+    this.bookmarks = await bookmarks.list()
+    this.requestUpdate()
   }
 
   get columns () {
@@ -143,114 +150,3 @@ function timeDifference (ts) {
     return `${n} ${pluralize(n, 'year')} ago`
   }
 }
-
-const DEBUG_BOOKMARKS = [
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548787496000,
-    "href": "beaker://search",
-    "notes": null,
-    "pinOrder": 10,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "Search"
-  },
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548698908000,
-    "href": "dat://beakerbrowser.com",
-    "notes": null,
-    "pinOrder": 9,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "Beaker Home"
-  },
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548698908000,
-    "href": "dat://beakerbrowser.com/docs",
-    "notes": null,
-    "pinOrder": 8,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "Documentation"
-  },
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548698908000,
-    "href": "dat://datproject.org",
-    "notes": null,
-    "pinOrder": 7,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "Dat Project"
-  },
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548698908000,
-    "href": "dat://taravancil.com/explore-the-p2p-web.md",
-    "notes": null,
-    "pinOrder": 6,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "Explore the p2p Web"
-  },
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548698908000,
-    "href": "https://github.com/beakerbrowser/beaker/issues",
-    "notes": null,
-    "pinOrder": 5,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "Report an issue"
-  },
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548698908000,
-    "href": "https://hashbase.io",
-    "notes": null,
-    "pinOrder": 4,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "Hashbase"
-  },
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548698908000,
-    "href": "https://opencollective.com/beaker",
-    "notes": null,
-    "pinOrder": 3,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "Support Beaker"
-  },
-  {
-    "_origin": false,
-    "_url": false,
-    "createdAt": 1548698908000,
-    "href": "https://twitter.com/beakerbrowser",
-    "notes": null,
-    "pinOrder": 2,
-    "pinned": true,
-    "private": true,
-    "tags": [],
-    "title": "@BeakerBrowser"
-  }
-]
