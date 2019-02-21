@@ -30,7 +30,7 @@ class Bookmarks extends LitElement {
     return html`
       <beaker-app-header
         fullwidth
-        profile-pic-src="${this.currentUser.url}/thumb"
+        current-user-url="${this.currentUser.url}"
         fontawesome-src="/vendor/beaker-app-stdlib/css/fontawesome.css"
       ></beaker-app-header>
       <div class="container">
