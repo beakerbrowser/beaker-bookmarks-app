@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pfrazee/beaker-bookmarks-app.git"
+    "url": "git+https://github.com/beakerbrowser/beaker-bookmarks-app.git"
   },
   "author": "Paul Frazee <pfrazee@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pfrazee/beaker-bookmarks-app/issues"
+    "url": "https://github.com/beakerbrowser/beaker-bookmarks-app/issues"
   },
-  "homepage": "https://github.com/pfrazee/beaker-bookmarks-app#readme"
+  "homepage": "https://github.com/beakerbrowser/beaker-bookmarks-app#readme"
 }
