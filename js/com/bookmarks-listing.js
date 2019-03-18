@@ -8,7 +8,8 @@ import bookmarksListingCSS from '../../css/com/bookmarks-listing.css.js'
 class BookmarksListing extends Table {
   static get properties() {
     return { 
-      rows: {type: Array}
+      rows: {type: Array},
+      currentCategory: {attribute: 'current-category'}
     }
   }
 
@@ -20,7 +21,11 @@ class BookmarksListing extends Table {
   }
 
   async load () {
-    this.bookmarks = await bookmarks.list()
+    this.bookmarks = await bookmarks.list({
+      filters: {
+        pinned: this.currentCategory === 'pinned'
+      }
+    })
     this.requestUpdate()
   }
 
@@ -70,6 +75,14 @@ class BookmarksListing extends Table {
 
   // events
   // =
+
+  attributeChangedCallback (name, oldval, newval) {
+    super.attributeChangedCallback(name, oldval, newval)
+    if (name === 'current-category' && newval) {
+      // trigger a load when we change categories
+      this.load()
+    }
+  }
 
   emit (evt, detail) {
     this.dispatchEvent(new CustomEvent(evt, {detail}))
