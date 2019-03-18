@@ -1,6 +1,7 @@
 import {html} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import {bookmarks} from '../tmp-beaker.js'
 import {Table} from '/vendor/beaker-app-stdlib/js/com/table.js'
+import * as toast from '/vendor/beaker-app-stdlib/js/com/toast.js'
 import {BeakerEditBookmarkPopup} from '/vendor/beaker-app-stdlib/js/com/popups/edit-bookmark.js'
 import tableCSS from '/vendor/beaker-app-stdlib/css/com/table.css.js'
 import bookmarksListingCSS from '../../css/com/bookmarks-listing.css.js'
@@ -68,7 +69,7 @@ class BookmarksListing extends Table {
     return html`
       <div>
         <button class="btn transparent" @click=${e => this.onClickEdit(e, row)}><i class="fas fa-pencil-alt"></i></button>
-        <button class="btn transparent" @click=${e => this.emit('move-to-trash', {href: row.href})}><i class="fas fa-trash"></i></button>
+        <button class="btn transparent" @click=${e => this.onDeleteBookmark(e, row)}><i class="fas fa-trash"></i></button>
       </div>
     `
   }
@@ -95,23 +96,29 @@ class BookmarksListing extends Table {
     try {
       // render popup
       var b = await BeakerEditBookmarkPopup.create(bookmark)
-      console.log('TODO', b)
-  
-      // TODO
-      // delete old bookmark if url changed
-      // if (originalBookmark.href !== b.href) {
-      //   await beaker.bookmarks.unbookmarkPrivate(originalBookmark.href)
-      // }
-  
-      // // set the bookmark
-      // await beaker.bookmarks.bookmarkPrivate(b.href, b)
-      // await beaker.bookmarks.setBookmarkPinned(b.href, b.pinned)
-  
-      // await loadBookmarks()
+
+      // update
+      await bookmarks.edit(bookmark.href, b)
+      await this.load()
     } catch (e) {
       // ignore
       console.log(e)
     }
+  }
+
+  async onDeleteBookmark (e, bookmark) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    await bookmarks.remove(bookmark.href)
+    await this.load()
+
+    const undo = async () => {
+      await bookmarks.add(bookmark)
+      await this.load()
+    }
+
+    toast.create('Bookmark deleted', '', 10e3, {label: 'Undo', click: undo})
   }
 }
 BookmarksListing.styles = [tableCSS, bookmarksListingCSS]
