@@ -1,6 +1,5 @@
 import {LitElement, css, html} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import {profiles} from './tmp-beaker.js'
-import '/vendor/beaker-app-stdlib/js/com/app-header.js'
 import './com/sidebar.js'
 import './com/bookmarks-listing.js'
 
@@ -28,11 +27,6 @@ class Bookmarks extends LitElement {
       return html`<div></div>`
     }
     return html`
-      <beaker-app-header
-        fullwidth
-        current-user-url="${this.currentUser.url}"
-        fontawesome-src="/vendor/beaker-app-stdlib/css/fontawesome.css"
-      ></beaker-app-header>
       <div class="container">
         <nav>
           <bookmarks-sidebar
