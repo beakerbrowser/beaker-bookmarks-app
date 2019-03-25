@@ -1,20 +1,23 @@
 import {LitElement, css, html} from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-element.js'
 import {profiles} from './tmp-beaker.js'
 import './com/sidebar.js'
+import './com/header-controls.js'
 import './com/bookmarks-listing.js'
 
 class Bookmarks extends LitElement {
   static get properties() {
     return {
       currentUser: {type: Object},
-      currentCategory: {type: String}
+      currentCategory: {type: String},
+      searchQuery: {type: String},
     }
   }
 
   constructor () {
     super()
     this.currentUser = null
-    this.currentCategory = 'all'
+    this.currentCategory = 'your'
+    this.searchQuery = ''
     this.load()
   }
 
@@ -35,8 +38,13 @@ class Bookmarks extends LitElement {
           ></bookmarks-sidebar>
         </nav>
         <main>
+          <bookmarks-header-controls
+            @query-changed=${this.onQueryChanged}
+          ></bookmarks-header-controls>
           <bookmarks-listing
             current-category="${this.currentCategory}"
+            search-query="${this.searchQuery}"
+            show-extended
           ></bookmarks-listing>
         </main>
       </div>
@@ -45,6 +53,10 @@ class Bookmarks extends LitElement {
 
   onSetCategory (e) {
     this.currentCategory = e.detail.category
+  }
+
+  onQueryChanged (e) {
+    this.searchQuery = e.detail.query
   }
 }
 Bookmarks.styles = css`

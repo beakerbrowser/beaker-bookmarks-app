@@ -2,3 +2,4 @@
 
 export const profiles = navigator.importSystemAPI('profiles')
 export const bookmarks = navigator.importSystemAPI('bookmarks')
+export const search = navigator.importSystemAPI('search')
