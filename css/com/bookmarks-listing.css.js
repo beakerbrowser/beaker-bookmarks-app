@@ -7,7 +7,9 @@ ${commonCSS}
 ${tooltipCSS}
 
 :host {
+  display: block;
   user-select: none;
+  margin-bottom: 60px;
 }
 
 .favicon {

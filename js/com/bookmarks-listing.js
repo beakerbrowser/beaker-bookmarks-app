@@ -35,25 +35,17 @@ class BookmarksListing extends Table {
     var user = await profiles.getCurrentUser()
     switch (this.currentCategory) {
       case 'your':
-        this.bookmarks = (await bookmarks.list()).map(b => fromInternal(b, user))
+        this.bookmarks = await bookmarks.query({filters: {authors: user.url}})
         break
       case 'pinned':
-        this.bookmarks = (await bookmarks.list({filters: {pinned: true}})).map(b => fromInternal(b, user))
+        this.bookmarks = await bookmarks.query({filters: {pinned: true}})
         break
       case 'network':
-        {
-          let pinneds = await bookmarks.list({filters: {pinned: true}})
-          let searchRes = await search.query({filters: {datasets: 'unwalled.garden/bookmark'}})
-          this.bookmarks = searchRes.results.map(b => fromUnwalledGarden(b, user, pinneds))
-          break
-        }
+        this.bookmarks = await bookmarks.query({filters: {public: true}})
+        break
       default:
-        {
-          let pinneds = await bookmarks.list({filters: {pinned: true}})
-          let searchRes = await search.query({filters: {datasets: 'unwalled.garden/bookmark', author: this.currentCategory}})
-          this.bookmarks = searchRes.results.map(b => fromUnwalledGarden(b, user, pinneds))
-          break
-        }
+        this.bookmarks = await bookmarks.query({filters: {authors: this.currentCategory, public: true}})
+        break
     }
     console.log(this.bookmarks)
     this.requestUpdate()
@@ -233,11 +225,14 @@ class BookmarksListing extends Table {
     }
 
     await bookmarks.remove(bookmark.href)
-    await this.load()
+    var i = this.bookmarks.indexOf(bookmark)
+    this.bookmarks.splice(i, 1)
+    this.requestUpdate()
 
     const undo = async () => {
       await bookmarks.add(bookmark)
-      await this.load()
+      this.bookmarks.splice(i, 0, bookmark)
+      this.requestUpdate()
     }
 
     toast.create('Bookmark deleted', '', 10e3, {label: 'Undo', click: undo})
@@ -296,20 +291,4 @@ function timeDifference (ts) {
     let n = Math.round(elapsed/msPerYear )
     return `${n} ${pluralize(n, 'year')} ago`
   }
-}
-
-function fromInternal (bookmark, user) {
-  bookmark.author = user
-  bookmark.isOwner = true
-  return bookmark
-}
-
-function fromUnwalledGarden (uwBookmark, user, pinneds) {
-  var bookmark = uwBookmark.content
-  bookmark.tags = bookmark.tags.split(' ').filter(Boolean)
-  bookmark.public = true
-  bookmark.author = uwBookmark.record.author
-  bookmark.isOwner = bookmark.author.url === user.url
-  bookmark.pinned = bookmark.isOwner && pinneds.find(p => p.href === bookmark.href)
-  return bookmark
 }
