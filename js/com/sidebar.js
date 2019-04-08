@@ -2,7 +2,7 @@ import { LitElement, html } from '/vendor/beaker-app-stdlib/vendor/lit-element/l
 import { classMap } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/directives/class-map.js'
 import { repeat } from '/vendor/beaker-app-stdlib/vendor/lit-element/lit-html/directives/repeat.js'
 import { profiles } from '../tmp-beaker.js'
-import { followgraph } from '../tmp-unwalled-garden.js'
+import { graph } from '../tmp-unwalled-garden.js'
 import sidebarCSS from '../../css/com/sidebar.css.js'
 
 class Sidebar extends LitElement {
@@ -21,7 +21,7 @@ class Sidebar extends LitElement {
 
   async load () {
     var self = await profiles.getCurrentUser()
-    var users = await followgraph.listFollows(self.url)
+    var users = await graph.listFollows(self.url)
     this.users = [self].concat(users).filter(Boolean)
   }
 

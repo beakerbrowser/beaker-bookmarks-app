@@ -41,10 +41,10 @@ class BookmarksListing extends Table {
         this.bookmarks = await bookmarks.query({filters: {pinned: true}})
         break
       case 'network':
-        this.bookmarks = await bookmarks.query({filters: {public: true}})
+        this.bookmarks = await bookmarks.query({filters: {isPublic: true}})
         break
       default:
-        this.bookmarks = await bookmarks.query({filters: {authors: this.currentCategory, public: true}})
+        this.bookmarks = await bookmarks.query({filters: {authors: this.currentCategory, isPublic: true}})
         break
     }
     console.log(this.bookmarks)
@@ -116,7 +116,7 @@ class BookmarksListing extends Table {
   }
 
   renderRowVisibility (row) {
-    if (row.public) {
+    if (row.isPublic) {
       return html`<img src="${row.author.url}/thumb" title="${row.author.title}">`
     }
     return html`<span class="fas fa-fw fa-lock"></span>`
